@@ -1,7 +1,8 @@
 ---
-title: Deploying on Kubernetes with Plural.sh
+title: Kubernetes Quickstart with Plural.sh
 description: We'll cover how to deploy Dagster on Kubernetes without needing to understand the complexities of Helm.
 ---
+# Kubernetes Quickstart with Plural.sh
 
 ## Overview
 
@@ -13,12 +14,84 @@ with the console.
 
 First, create an account on [https://app.plural.sh](https://app.plural.sh). This is to sync your installations and allow for the delivery of automated upgrades. You will not be asked to provide any infrastructure credentials or sensitive information.
 
-Next, install the Plural CLI by following steps 1-3 of [these instructions](https://docs.plural.sh/getting-started).
+Next, install the Plural CLI. If you're on Mac, the brew tap is the easiest way to do this, as it installs Helm, Terraform, and kubectl for you.
+For alternate installation methods such as curl and Docker, [click here](https://docs.plural.sh/getting-started/quickstart#install-plural-cli).
 
-You'll need a Git repository to store your Plural configuration. This will contain the Helm charts, Terraform config, and Kubernetes manifests that Plural will autogenerate for you.
+```shell
+brew install pluralsh/plural/plural
+```
 
-You have two options:
-- Run `plural init` in any directory to let Plural initiate an OAuth workflow to create a Git repo for you.
-- Create a Git repo manually, clone it down, and run `plural init` inside it.
+<Warning>
+    Before you proceed, make sure that your cloud provider CLI is properly configured and updated to the latest version.
+    If it is not configured correctly, Plural will fail and won't be able to create resources on your behalf.
+</Warning>
 
-Running `plural init` will start a configuration wizard to configure your Git repo and cloud provider for use with Plural.
+Plural uses a GitOps workflow to manage configuration files and deployment state, so you'll need a Git repository to store your Plural configuration. Plural supports GitHub, GitLab, and Bitbucket currently. This repository will contain the Helm charts, Terraform config, and Kubernetes manifests that Plural will autogenerate for you.
+
+Navigate to a directory that you would like to create this Git repository in and run `plural init`. This will start a configuration wizard to configure your Git repo and cloud provider for use with Plural.
+
+## Installing Dagster
+
+Run this command to find the bundle name associated with your cloud provider:
+
+```shell
+plural bundle list dagster
+```
+
+Now, to add it to your workspace, run the install command with the bundle name that you received in the previous step. This will guide you through some minor configuration of your Dagster installation, such as choosing the subdomain that your Dagster installation will be hosted at. If you are on AWS, it would look like this:
+
+```shell
+plural bundle install dagster dagster-aws
+```
+
+To generate the Helm charts, Terraform, and deployment YAML, run:
+
+```shell
+plural build
+```
+
+To deploy your infrastructure and commit the changes to your origin Git repository, run:
+
+```shell
+plural deploy --commit "deploying dagster"
+```
+
+## Installing the Plural Console
+
+Plural comes with a console that provides DevOps workflows, customized dashboards, and an interactive UI for managing your Kubernetes cluster. It's not required, but highly recommended. You can install the console the same way that you installed Dagster:
+
+```shell
+plural bundle install console console-aws
+plural build
+plural deploy --commit "deploying the console too"
+```
+
+## Accessing your Dagster installation
+
+Navigate to `dagster.YOUR_SUBDOMAIN.onplural.sh` to access the Dagster UI. If you set up a different subdomain for Dagster during the `plural bundle install` phase, use that instead.
+
+## Uninstalling Dagster
+
+To bring down your Plural installation of Dagster, run:
+
+```shell
+plural destroy dagster
+```
+
+To bring down your entire Plural deployment, run:
+
+```shell
+plural destroy
+```
+
+<Warning>
+    Only do this if you're absolutely sure you want to bring down all associated resources with this repository.
+</Warning>
+
+## Troubleshooting
+
+If you run into any issues with installing Dagster on Plural, feel free to join our [Discord Community](https://discord.gg/pluralsh) so that we can help you out.
+
+If you'd like to request any updates or new features for our Dagster installation, feel free to open an issue [here](https://github.com/pluralsh/plural-artifacts).
+
+
