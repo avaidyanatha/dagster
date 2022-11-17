@@ -1,0 +1,24 @@
+---
+title: Deploying on Kubernetes with Plural.sh
+description: We'll cover how to deploy Dagster on Kubernetes without needing to understand the complexities of Helm.
+---
+
+## Overview
+
+[Plural](https://www.plural.sh/) is a free, open-source tool that enables you to self-host Dagster on Kubernetes in one
+of the big three cloud providers. It provides automated upgrades, secret encryption, and built-in DevOps workflows
+with the console.
+
+## Getting Started
+
+First, create an account on [https://app.plural.sh](https://app.plural.sh). This is to sync your installations and allow for the delivery of automated upgrades. You will not be asked to provide any infrastructure credentials or sensitive information.
+
+Next, install the Plural CLI by following steps 1-3 of [these instructions](https://docs.plural.sh/getting-started).
+
+You'll need a Git repository to store your Plural configuration. This will contain the Helm charts, Terraform config, and Kubernetes manifests that Plural will autogenerate for you.
+
+You have two options:
+- Run `plural init` in any directory to let Plural initiate an OAuth workflow to create a Git repo for you.
+- Create a Git repo manually, clone it down, and run `plural init` inside it.
+
+Running `plural init` will start a configuration wizard to configure your Git repo and cloud provider for use with Plural.
